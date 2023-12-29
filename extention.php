@@ -25,10 +25,13 @@ function booking_form_shortcode() {
             <label for="last_name">Nom:</label>
             <input type="text" name="last_name" required>
 
+            <label for="email">Adresse e-mail:</label>
+            <input type="email" name="email" required>
+
             <label for="calendar">Calendrier:</label>
             <input type="text" name="calendar" id="datepicker" required>
 
-            <label for="timeslot">Horaire:</label>
+            <label for="timeslot">Plage horaire:</label>
             <select name="timeslot" required>
                 <optgroup label="Matin">
                     <option value="morning_1">9h - 11h</option>
@@ -41,9 +44,6 @@ function booking_form_shortcode() {
                     <option value="afternoon_3">19h - 21h</option>
                 </optgroup>
             </select>
-
-            <label for="email">Adresse e-mail:</label>
-            <input type="email" name="email" required>
 
             <input type="submit" name="submit_booking" value="Réserver">
         </form>
@@ -64,9 +64,9 @@ function process_booking_form() {
         // Récupération des données du formulaire
         $first_name = sanitize_text_field($_POST['first_name']);
         $last_name = sanitize_text_field($_POST['last_name']);
+        $email = sanitize_email($_POST['email']);
         $calendar = sanitize_text_field($_POST['calendar']);
         $timeslot = sanitize_text_field($_POST['timeslot']);
-        $email = sanitize_email($_POST['email']);
 
         // Envoi d'un e-mail à l'administrateur
         $admin_email = get_option('admin_email');
@@ -74,9 +74,9 @@ function process_booking_form() {
         $message = "Nouvelle réservation effectuée :\n\n";
         $message .= "Nom: $last_name\n";
         $message .= "Prénom: $first_name\n";
+        $message .= "Adresse e-mail: $email\n";
         $message .= "Calendrier: $calendar\n";
         $message .= "Horaire: $timeslot\n";
-        $message .= "Adresse e-mail: $email\n";
 
         // Ajout de lignes de débogage
         error_log('Debug: ' . print_r($message, true));
