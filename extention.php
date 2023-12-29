@@ -9,7 +9,7 @@ Author: Sarra et Naissiane
 // Enqueue jQuery UI datepicker
 function enqueue_datepicker() {
     wp_enqueue_script('jquery-ui-datepicker');
-    wp_enqueue_style('jquery-ui-datepicker-css', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css');
+    wp_enqueue_style('jquery-ui-datepicker-css', plugins_url('jquery-ui.css', __FILE__));
 }
 add_action('wp_enqueue_scripts', 'enqueue_datepicker');
 
@@ -25,17 +25,25 @@ function booking_form_shortcode() {
             <label for="last_name">Nom:</label>
             <input type="text" name="last_name" required>
 
-            <label for="email">Adresse e-mail:</label>
-            <input type="email" name="email" required>
-
             <label for="calendar">Calendrier:</label>
             <input type="text" name="calendar" id="datepicker" required>
 
             <label for="timeslot">Horaire:</label>
             <select name="timeslot" required>
-                <option value="morning">Matin</option>
-                <option value="afternoon">Après-midi</option>
+                <optgroup label="Matin">
+                    <option value="morning_1">9h - 11h</option>
+                    <option value="morning_2">11h - 13h</option>
+                    <option value="morning_3">13h - 15h</option>
+                </optgroup>
+                <optgroup label="Après-midi">
+                    <option value="afternoon_1">15h - 17h</option>
+                    <option value="afternoon_2">17h - 19h</option>
+                    <option value="afternoon_3">19h - 21h</option>
+                </optgroup>
             </select>
+
+            <label for="email">Adresse e-mail:</label>
+            <input type="email" name="email" required>
 
             <input type="submit" name="submit_booking" value="Réserver">
         </form>
@@ -56,9 +64,9 @@ function process_booking_form() {
         // Récupération des données du formulaire
         $first_name = sanitize_text_field($_POST['first_name']);
         $last_name = sanitize_text_field($_POST['last_name']);
-        $email = sanitize_email($_POST['email']);
         $calendar = sanitize_text_field($_POST['calendar']);
         $timeslot = sanitize_text_field($_POST['timeslot']);
+        $email = sanitize_email($_POST['email']);
 
         // Envoi d'un e-mail à l'administrateur
         $admin_email = get_option('admin_email');
@@ -66,9 +74,9 @@ function process_booking_form() {
         $message = "Nouvelle réservation effectuée :\n\n";
         $message .= "Nom: $last_name\n";
         $message .= "Prénom: $first_name\n";
-        $message .= "Adresse e-mail: $email\n";
         $message .= "Calendrier: $calendar\n";
         $message .= "Horaire: $timeslot\n";
+        $message .= "Adresse e-mail: $email\n";
 
         // Ajout de lignes de débogage
         error_log('Debug: ' . print_r($message, true));
